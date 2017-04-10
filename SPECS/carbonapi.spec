@@ -2,6 +2,8 @@
 %define carbon_group carbon
 %define carbon_loggroup adm
 
+%define debug_package %{nil}
+
 %global commit             1443a4759dd1a80776348fa9738d98d7a697577a
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
@@ -14,9 +16,18 @@ Group:		Development/Tools
 License:	BSD-2-Clause License
 URL:		https://github.com/lomik/carbonapi
 
-# NOTE: We use "git clone" in %prep instead of having tarball here
-# since we need .git directory to use "go get ./..." to build carbonapi.
-#Source0:	https://github.com/dgryski/carbonapi/archive/%{commit}.tar.gz#/%{name}-%{commit}.tar.gz
+# NOTE: carbonapi.tar.gz was created with the following commands.
+#
+# export GOPATH=$PWD/carbonapi/go
+# mkdir -p carbonapi/go/src/github.com/dgryski
+# pushd $GOPATH/src/github.com/dgryski
+# git clone https://github.com/dgryski/carbonapi
+# cd carbonapi
+# git checkout 1443a4759dd1a80776348fa9738d98d7a697577a
+# go get -d ./...
+# popd
+# tar zcf carbonapi.tar.gz carbonapi
+Source0:	carbonapi.tar.gz
 
 Source1:	carbonapi.yaml
 Source2:	carbonapi.service
@@ -34,20 +45,12 @@ CarbonAPI supports a significant subset of graphite functions. In our testing it
 5x-10x faster than requesting data from graphite-web.
 
 %prep
-%{__rm} -rf %{_builddir}
-
-# NOTE: To use go "get ./..." to install dependencies,
-# we need .git directory in carbonapi source directory.
-%{__mkdir} -p %{_builddir}/%{name}/go/src/github.com/dgryski
-cd %{_builddir}/%{name}/go/src/github.com/dgryski
-git clone https://github.com/dgryski/%{name}
-cd %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}
-git checkout %{commit}
+%setup -n %{name}
 
 %build
 export GOPATH=%{_builddir}/%{name}/go
 cd %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}
-go get ./...
+go build
 
 %install
 %{__rm} -rf %{buildroot}
@@ -55,7 +58,7 @@ go get ./...
 %{__mkdir} -p %{buildroot}%{_sysconfdir}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
 
-%{__install} -pD -m 755 %{_builddir}/%{name}/go/bin/%{name} \
+%{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}/%{name} \
     %{buildroot}%{_sbindir}/%{name}
 %{__install} -pD -m 644 %{SOURCE1} %{buildroot}/%{_sysconfdir}/%{name}.yaml
 %{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
