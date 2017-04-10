@@ -1,0 +1,16 @@
+[Unit]
+Description=carbonapi server
+Documentation=https://github.com/dgryski/carbonapi
+Wants=network-online.target go-carbon.service
+After=network-online.target go-carbon.service
+
+[Service]
+User=carbon
+Group=carbon
+Type=simple
+Restart=on-failure
+ExecStart=/usr/sbin/carbonapi -config /etc/carbonapi.yaml
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
