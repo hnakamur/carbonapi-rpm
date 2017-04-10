@@ -9,7 +9,7 @@
 
 Name:	        carbonapi
 Version:	0.7.0
-Release:	0.1.git%{shortcommit}%{?dist}
+Release:	0.2.git%{shortcommit}%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -57,6 +57,7 @@ go build
 %{__mkdir} -p %{buildroot}%{_sbindir}
 %{__mkdir} -p %{buildroot}%{_sysconfdir}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
+%{__mkdir} -p %{buildroot}%{_localstatedir}/run/%{name}
 
 %{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}/%{name} \
     %{buildroot}%{_sbindir}/%{name}
@@ -68,6 +69,7 @@ go build
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}.yaml
 %attr(0755,root,root) %dir %{_localstatedir}/log/%{name}
+%attr(0755,%{carbon_user},%{carbon_group}) %dir %{_localstatedir}/run/%{name}
 %{_unitdir}/%{name}.service
 
 %pre
@@ -99,5 +101,8 @@ fi
 %systemd_postun
 
 %changelog
+* Mon Apr 10 2017 <hnakamur@gmail.com> - 0.7.0-0.2.git1443a47
+- Create pid file and enable graceful restart
+
 * Mon Apr 10 2017 <hnakamur@gmail.com> - 0.7.0-0.1.git1443a47
 - Initial release

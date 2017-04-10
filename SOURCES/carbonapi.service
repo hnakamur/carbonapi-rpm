@@ -10,6 +10,8 @@ Group=carbon
 Type=simple
 Restart=on-failure
 ExecStart=/usr/sbin/carbonapi -config /etc/carbonapi.yaml
+ExecReload=/usr/bin/sh -c "/usr/bin/kill -USR2 $(cat /var/run/carbonapi/carbonapi.pid)"
+PIDFile=/var/run/carbonapi/carbonapi.pid
 LimitNOFILE=65536
 
 [Install]
