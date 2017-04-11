@@ -9,7 +9,7 @@
 
 Name:	        carbonapi
 Version:	0.7.0
-Release:	0.2.git%{shortcommit}%{?dist}
+Release:	0.3.git%{shortcommit}%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -31,6 +31,7 @@ Source0:	carbonapi.tar.gz
 
 Source1:	carbonapi.yaml
 Source2:	carbonapi.service
+Source3:	logrotate
 
 # NOTE: We do not use logrotate yet. We plan to use logrotate with graceful restart
 # of carbonapi with https://github.com/lestrrat/go-server-starter.
@@ -54,20 +55,20 @@ go build
 
 %install
 %{__rm} -rf %{buildroot}
-%{__mkdir} -p %{buildroot}%{_sbindir}
-%{__mkdir} -p %{buildroot}%{_sysconfdir}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/run/%{name}
 
 %{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}/%{name} \
     %{buildroot}%{_sbindir}/%{name}
-%{__install} -pD -m 644 %{SOURCE1} %{buildroot}/%{_sysconfdir}/%{name}.yaml
+%{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{name}.yaml
 %{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
+%{__install} -pD -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}.yaml
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %attr(0755,root,root) %dir %{_localstatedir}/log/%{name}
 %attr(0755,%{carbon_user},%{carbon_group}) %dir %{_localstatedir}/run/%{name}
 %{_unitdir}/%{name}.service
@@ -101,6 +102,9 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Apr 11 2017 <hnakamur@gmail.com> - 0.7.0-0.3.git1443a47
+- Add logrotate
+
 * Mon Apr 10 2017 <hnakamur@gmail.com> - 0.7.0-0.2.git1443a47
 - Create pid file and enable graceful restart
 
