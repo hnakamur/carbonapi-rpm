@@ -9,7 +9,7 @@
 
 Name:	        carbonapi
 Version:	0.7.0
-Release:	0.4.git%{shortcommit}%{?dist}
+Release:	0.5.git%{shortcommit}%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -107,6 +107,9 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Apr 11 2017 <hnakamur@gmail.com> - 0.7.0-0.5.git1a0d3f9
+- Update repository URL of carbonapi in systemd unit file
+
 * Tue Apr 11 2017 <hnakamur@gmail.com> - 0.7.0-0.4.git1a0d3f9
 - Update to 1a0d3f9ecd9e7bebcdd51795f38bb8d76182689d
 

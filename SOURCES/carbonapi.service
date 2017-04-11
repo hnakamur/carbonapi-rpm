@@ -1,6 +1,6 @@
 [Unit]
 Description=carbonapi server
-Documentation=https://github.com/dgryski/carbonapi
+Documentation=https://github.com/go-graphite/carbonapi
 Wants=network-online.target go-carbon.service
 After=network-online.target go-carbon.service
 
