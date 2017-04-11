@@ -1,7 +1,7 @@
 carbonapi-rpm
 =============
 
-A Dockerfile to build [dgryski/carbonapi: API server for github.com/dgryski/carbonzipper](https://github.com/dgryski/carbonapi) rpm for CentOS 7 using [fedora copr](https://copr.fedoraproject.org/).
+A Dockerfile to build [go-graphite/carbonapi: API server for github.com/go-graphite/carbonzipper](https://github.com/go-graphite/carbonapi) rpm for CentOS 7 using [fedora copr](https://copr.fedoraproject.org/).
 
 ## Setup
 
