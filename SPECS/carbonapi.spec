@@ -14,7 +14,7 @@ Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
 License:	BSD-2-Clause License
-URL:		https://github.com/lomik/carbonapi
+URL:		https://github.com/dgryski/carbonapi
 
 # NOTE: carbonapi.tar.gz was created with the following commands.
 #
