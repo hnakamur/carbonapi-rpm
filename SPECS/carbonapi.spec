@@ -4,28 +4,33 @@
 
 %define debug_package %{nil}
 
-%global commit             1443a4759dd1a80776348fa9738d98d7a697577a
+%global commit             1a0d3f9ecd9e7bebcdd51795f38bb8d76182689d
 %global shortcommit        %(c=%{commit}; echo ${c:0:7})
 
 Name:	        carbonapi
 Version:	0.7.0
-Release:	0.3.git%{shortcommit}%{?dist}
+Release:	0.4.git%{shortcommit}%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
 License:	BSD-2-Clause License
-URL:		https://github.com/dgryski/carbonapi
+URL:		https://github.com/go-graphite/carbonapi
 
 # NOTE: carbonapi.tar.gz was created with the following commands.
+# NOTE: "go get -d ./..." is needed after "dep ensure" since
+# "dep ensure" does not install all of dependencies currently for carbonapi.
 #
 # export GOPATH=$PWD/carbonapi/go
-# mkdir -p carbonapi/go/src/github.com/dgryski
-# pushd $GOPATH/src/github.com/dgryski
-# git clone https://github.com/dgryski/carbonapi
+# mkdir -p carbonapi/go/src/github.com/go-graphite
+# pushd $GOPATH/src/github.com/go-graphite
+# git clone https://github.com/go-graphite/carbonapi
 # cd carbonapi
-# git checkout 1443a4759dd1a80776348fa9738d98d7a697577a
+# git checkout 1a0d3f9ecd9e7bebcdd51795f38bb8d76182689d
+# dep ensure
 # go get -d ./...
 # popd
+# rm -rf carbonapi/go/pkg
+# find carbonapi/go/src -name .git -type d | xargs rm -rf
 # tar zcf carbonapi.tar.gz carbonapi
 Source0:	carbonapi.tar.gz
 
@@ -39,7 +44,7 @@ Source3:	logrotate
 #Source3:	logrotate
 
 BuildRequires:  golang >= 1.8
-BuildRequires:  git
+BuildRequires:  cairo-devel
 
 %description
 CarbonAPI supports a significant subset of graphite functions. In our testing it has shown to be
@@ -50,7 +55,7 @@ CarbonAPI supports a significant subset of graphite functions. In our testing it
 
 %build
 export GOPATH=%{_builddir}/%{name}/go
-cd %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}
+cd %{_builddir}/%{name}/go/src/github.com/go-graphite/%{name}
 go build
 
 %install
@@ -58,7 +63,7 @@ go build
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/run/%{name}
 
-%{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}/%{name} \
+%{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/go-graphite/%{name}/%{name} \
     %{buildroot}%{_sbindir}/%{name}
 %{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{name}.yaml
 %{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
@@ -102,6 +107,9 @@ fi
 %systemd_postun
 
 %changelog
+* Tue Apr 11 2017 <hnakamur@gmail.com> - 0.7.0-0.4.git1a0d3f9
+- Update to 1a0d3f9ecd9e7bebcdd51795f38bb8d76182689d
+
 * Tue Apr 11 2017 <hnakamur@gmail.com> - 0.7.0-0.3.git1443a47
 - Add logrotate
 
