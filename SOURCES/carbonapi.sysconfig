@@ -1,0 +1,29 @@
+# listen port
+PORT=8082                                                                                                             
+
+# url of carbonzipper or built-in carbonserver in go-carbon
+ZIPPER_URL=http://127.0.0.1:8080
+
+# graphite address (in host:port form)
+GRAPHITEADDR=127.0.0.1:2003
+
+# cache type to use
+CACHE_TYPE=mem
+
+# in-memory cache size in MB (0 is unlimited)
+MEMSIZE=0
+
+# number of CPUs to use (0 is auto)
+CPUS=0
+
+# log directory
+LOGDIR=/var/log/carbonapi
+
+# interval to report internal statistics to graphite
+INTERVAL=60s
+
+# max idle connections
+IDLECONNS=10
+
+# concurrency limit
+CONCURRENCY_LIMIT=20
