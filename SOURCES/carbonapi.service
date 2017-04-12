@@ -9,8 +9,9 @@ User=carbon
 Group=carbon
 Type=simple
 Restart=on-failure
-ExecStart=/usr/sbin/carbonapi -config /etc/carbonapi.yaml
-ExecReload=/usr/bin/sh -c "/usr/bin/kill -USR2 $(cat /var/run/carbonapi/carbonapi.pid)"
+EnvironmentFile=/etc/sysconfig/carbonapi
+ExecStart=/usr/sbin/carbonapi -z $ZIPPER_URL -pid /var/run/carbonapi/carbonapi.pid -graphite $GRAPHITEADDR -p $PORT -i $INTERVAL -cpus $CPUS -cache $CACHE_TYPE -memsize $MEMSIZE -l $CONCURRENCY_LIMIT -idleconns $IDLECONNS -logdir $LOGDIR
+ExecReload=/bin/pkill -USR2 --pidfile /var/run/carbonapi/carbonapi.pid
 PIDFile=/var/run/carbonapi/carbonapi.pid
 LimitNOFILE=65536
 
