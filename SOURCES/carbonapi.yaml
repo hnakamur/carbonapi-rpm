@@ -1,0 +1,39 @@
+# Need to be URL, http or https.
+# You can specify the URL of a built-in carbonserver in go-carbon or a carbonzipper.
+zipper: "http://localhost:8080"
+# Listen address, should always include hostname or ip address and a port.
+listen: "localhost:8082"
+# Max concurrent requests to CarbonZipper
+concurency: 20
+cache:
+   type: "null"
+# Amount of CPUs to use. 0 - unlimited
+cpus: 0
+# Timezone, default - local
+tz: ""
+# If 'true', carbonapi will send requests as is, with globs and braces
+# Otherwise for each request it will generate /metrics/find and then /render
+# individual metrics.
+# true - faster, but will cause carbonzipper to consume much more RAM.
+sendGlobsAsIs: false
+graphite:
+    # Host:port where to send internal metrics
+    # Empty = disabled
+    host: "localhost:2003"
+    interval: "60s"
+    prefix: "carbon.api"
+# Maximium idle connections to carbonzipper
+idleConnections: 10
+pidFile: "/var/run/carbonapi/carbonapi.pid"
+# See https://github.com/dgryski/carbonzipper/blob/master/example.conf#L70-L108 for format explanation
+logger:
+    - logger: ""
+      file: "stderr"
+      level: "debug"
+      encoding: "console"
+      encodingTime: "iso8601"
+      encodingDuration: "seconds"
+    - logger: ""
+      file: "/var/log/carbonapi/carbonapi.log"
+      level: "info"
+      encoding: "json"
