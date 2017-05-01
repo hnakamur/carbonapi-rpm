@@ -4,12 +4,9 @@
 
 %define debug_package %{nil}
 
-# %global commit             1a0d3f9ecd9e7bebcdd51795f38bb8d76182689d
-# %global shortcommit        %(c=%{commit}; echo ${c:0:7})
-
 Name:	        carbonapi
-Version:	0.7.0
-Release:	2%{?dist}
+Version:	0.8.0
+Release:	1%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -18,29 +15,25 @@ URL:		https://github.com/go-graphite/carbonapi
 
 
 # NOTE: carbonapi.tar.gz was created with the following commands.
+# You need to install dep with the following command.
+# go get -u github.com/golang/dep/...
+#
 # mkdir -p carbonapi/go/src/github.com/go-graphite
 # cd carbonapi/go
 # export GOPATH=$PWD
 # cd src/github.com/go-graphite
 # git clone https://github.com/go-graphite/carbonapi
 # cd carbonapi
-# git checkout 0.7.0
-# cd $GOPATH
-# mv src/github.com/go-graphite src/github.com/dgryski
-# cd src/github.com/dgryski/carbonapi
-# go get -d ./...
+# git checkout 0.8.0
+# dep ensure
 # cd $GOPATH/../..
 # tar cf - carbonapi | gzip -9 > carbonapi.tar.gz
 Source0:	carbonapi.tar.gz
 
-Source1:	carbonapi.sysconfig
+Source1:	carbonapi.yaml
 Source2:	carbonapi.service
-
-# NOTE: We do not use logrotate since carbonapi 0.7.0
-# does logrotate by itself using https://github.com/lestrrat/go-file-rotatelogs
-#Source3:	logrotate
-
-Source4:        tmpfiles
+Source3:	logrotate
+Source4:	tmpfiles
 
 BuildRequires:  golang >= 1.8
 BuildRequires:  cairo-devel
@@ -54,7 +47,7 @@ CarbonAPI supports a significant subset of graphite functions. In our testing it
 
 %build
 export GOPATH=%{_builddir}/%{name}/go
-cd %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}
+cd %{_builddir}/%{name}/go/src/github.com/go-graphite/%{name}
 go build
 
 %install
@@ -62,16 +55,18 @@ go build
 %{__mkdir} -p %{buildroot}%{_localstatedir}/log/%{name}
 %{__mkdir} -p %{buildroot}%{_localstatedir}/run/%{name}
 
-%{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/dgryski/%{name}/%{name} \
+%{__install} -pD -m 755 %{_builddir}/%{name}/go/src/github.com/go-graphite/%{name}/%{name} \
     %{buildroot}%{_sbindir}/%{name}
-%{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
+%{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{name}.yaml
 %{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
-%{__install} -pD -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/tmpfiles/%{name}.conf
+%{__install} -pD -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+%{__install} -pD -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
-%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/%{name}.yaml
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/tmpfiles.d/%{name}.conf
 %attr(0755,root,root) %dir %{_localstatedir}/log/%{name}
 %attr(0755,%{carbon_user},%{carbon_group}) %dir %{_localstatedir}/run/%{name}
@@ -106,6 +101,10 @@ fi
 %systemd_postun
 
 %changelog
+* Mon May  1 2017 <hnakamur@gmail.com> - 0.8.0-1
+- 0.8.0
+- Add logrotate
+
 * Wed Apr 19 2017 <hnakamur@gmail.com> - 0.7.0-2
 - Add /etc/tmpfiles.d/carbonapi.conf
 
