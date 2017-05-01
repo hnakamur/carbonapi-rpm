@@ -9,7 +9,7 @@
 
 Name:	        carbonapi
 Version:	0.7.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -40,6 +40,8 @@ Source2:	carbonapi.service
 # does logrotate by itself using https://github.com/lestrrat/go-file-rotatelogs
 #Source3:	logrotate
 
+Source4:        tmpfiles
+
 BuildRequires:  golang >= 1.8
 BuildRequires:  cairo-devel
 
@@ -64,11 +66,13 @@ go build
     %{buildroot}%{_sbindir}/%{name}
 %{__install} -pD -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 %{__install} -pD -m 644 %{SOURCE2} %{buildroot}%{_unitdir}/%{name}.service
+%{__install} -pD -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/tmpfiles/%{name}.conf
 
 %files
 %defattr(-,root,root,-)
 %{_sbindir}/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/tmpfiles.d/%{name}.conf
 %attr(0755,root,root) %dir %{_localstatedir}/log/%{name}
 %attr(0755,%{carbon_user},%{carbon_group}) %dir %{_localstatedir}/run/%{name}
 %{_unitdir}/%{name}.service
@@ -102,6 +106,9 @@ fi
 %systemd_postun
 
 %changelog
+* Wed Apr 19 2017 <hnakamur@gmail.com> - 0.7.0-2
+- Add /etc/tmpfiles.d/carbonapi.conf
+
 * Wed Apr 12 2017 <hnakamur@gmail.com> - 0.7.0-1
 - Revert to tagged 0.7.0 release
 
