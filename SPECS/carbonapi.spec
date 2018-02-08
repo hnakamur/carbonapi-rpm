@@ -5,7 +5,7 @@
 %define debug_package %{nil}
 
 Name:	        carbonapi
-Version:	0.8.0
+Version:	0.9.0
 Release:	1%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
@@ -24,7 +24,7 @@ URL:		https://github.com/go-graphite/carbonapi
 # cd src/github.com/go-graphite
 # git clone https://github.com/go-graphite/carbonapi
 # cd carbonapi
-# git checkout 0.8.0
+# git checkout 0.9.0
 # dep ensure
 # cd $GOPATH/../..
 # tar cf - carbonapi | gzip -9 > carbonapi.tar.gz
@@ -101,6 +101,9 @@ fi
 %systemd_postun
 
 %changelog
+* Thu Feb  8 2018 <hnakamur@gmail.com> - 0.9.0-1
+- 0.9.0
+
 * Mon May  1 2017 <hnakamur@gmail.com> - 0.8.0-1
 - 0.8.0
 - Add logrotate
