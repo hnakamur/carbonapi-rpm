@@ -6,7 +6,7 @@
 
 Name:	        carbonapi
 Version:	0.9.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -35,8 +35,10 @@ Source2:	carbonapi.service
 Source3:	logrotate
 Source4:	tmpfiles
 
-BuildRequires:  golang >= 1.8
-BuildRequires:  cairo-devel
+%{?systemd_requires}
+BuildRequires:	systemd
+BuildRequires:	golang >= 1.8
+BuildRequires:	cairo-devel
 
 %description
 CarbonAPI supports a significant subset of graphite functions. In our testing it has shown to be
@@ -98,9 +100,12 @@ fi
 %systemd_preun %{name}.service
 
 %postun
-%systemd_postun
+%systemd_postun %{name}.service
 
 %changelog
+* Tue Feb 13 2018 <hnakamur@gmail.com> - 0.9.0-2
+- Fix systemd scriptlets.
+
 * Thu Feb  8 2018 <hnakamur@gmail.com> - 0.9.0-1
 - 0.9.0
 
