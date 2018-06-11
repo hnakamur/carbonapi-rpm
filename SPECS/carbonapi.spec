@@ -5,8 +5,8 @@
 %define debug_package %{nil}
 
 Name:	        carbonapi
-Version:	0.9.0
-Release:	2%{?dist}
+Version:	0.11.0
+Release:	1%{?dist}
 Summary:	API server for carbonzipper or built-in carbonserver in go-carbon
 
 Group:		Development/Tools
@@ -14,21 +14,7 @@ License:	BSD-2-Clause License
 URL:		https://github.com/go-graphite/carbonapi
 
 
-# NOTE: carbonapi.tar.gz was created with the following commands.
-# You need to install dep with the following command.
-# go get -u github.com/golang/dep/...
-#
-# mkdir -p carbonapi/go/src/github.com/go-graphite
-# cd carbonapi/go
-# export GOPATH=$PWD
-# cd src/github.com/go-graphite
-# git clone https://github.com/go-graphite/carbonapi
-# cd carbonapi
-# git checkout 0.9.0
-# dep ensure
-# cd $GOPATH/../..
-# tar cf - carbonapi | gzip -9 > carbonapi.tar.gz
-Source0:	carbonapi.tar.gz
+Source0:	https://github.com/go-graphite/carbonapi/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 Source1:	carbonapi.yaml
 Source2:	carbonapi.service
@@ -45,7 +31,8 @@ CarbonAPI supports a significant subset of graphite functions. In our testing it
 5x-10x faster than requesting data from graphite-web.
 
 %prep
-%setup -n %{name}
+%setup -c -n %{_builddir}/%{name}/go/src/github.com/go-graphite
+mv %{name}-%{version} %{name}
 
 %build
 export GOPATH=%{_builddir}/%{name}/go
@@ -103,6 +90,9 @@ fi
 %systemd_postun %{name}.service
 
 %changelog
+* Mon Jun 11 2018 <hnakamur@gmail.com> - 0.11.0-1
+- 0.11.0
+
 * Tue Feb 13 2018 <hnakamur@gmail.com> - 0.9.0-2
 - Fix systemd scriptlets.
 
